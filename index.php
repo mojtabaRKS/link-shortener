@@ -7,8 +7,8 @@ try {
     
     $app = require __DIR__ . '/src/bootstrap/app.php';
 
-    $app->run();
+    return $app->send();
     
 } catch (\Throwable $th) {
-    dd($th);
+    dd($th, __FILE__, __LINE__);
 }

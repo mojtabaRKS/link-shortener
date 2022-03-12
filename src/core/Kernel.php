@@ -2,9 +2,11 @@
 
 namespace Core;
 
+use Core\Logging\Logger;
+
 class Kernel
 {
-    public static function run()
+    public function run()
     {
         Logger::enableSystemLogs();
     }

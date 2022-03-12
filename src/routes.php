@@ -1,13 +1,21 @@
 <?php
 
-use Core\Router;
-use App\Controllers\LinkController;
+use Symfony\Component\Routing\Route;
+use Symfony\Component\Routing\RouteCollection;
 
-$router = new Router();
+$collection = new RouteCollection();
 
-$router->get('links', [LinkController::class, 'index']);
-$router->post('links', [LinkController::class, 'store']);
-$router->put('links/([0-9]*)', [LinkController::class, 'update']);
-$router->delete('links/([0-9]*)', [LinkController::class, 'destroy']);
+$collection->add('links.show', newRoute(
+    'GET', 
+    '/links/{id}', 
+    'App\Controllers\LinkController@show', 
+    ['id' => '[0-9]+']
+));
 
-// $router->post('login', ['App\Controllers\AuthController', 'login']);
+$collection->add('links.store', newRoute(
+    'POST', 
+    '/links', 
+    'App\Controllers\LinkController@store', 
+));
+
+return $collection;

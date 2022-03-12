@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use Throwable;
-use Core\Database;
+use Core\Database\Connection;
 use App\Models\Link;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,7 +13,7 @@ class LinkController extends Controller
     protected $dbConnection;
     public function __construct()
     {
-        $this->dbConnection = Database::getInstance()->getConnection();
+        $this->dbConnection = Connection::getInstance()->getConnection();
     }
 
     /**
@@ -35,7 +35,25 @@ class LinkController extends Controller
             );
 
         } catch (Throwable $exception) {
-            $this->dbConnection->rollBack();
+            return $this->failureResponse($exception);
+        }
+    }
+
+    /**
+     * @param Request $request
+     */
+    public function show($id)
+    {
+        try {
+            $link = (new Link)->find($id);
+            dd($link);
+            return $this->successResponse(
+                'Link found successfully', 
+                $link->toArray(), 
+                Response::HTTP_OK
+            );
+
+        } catch (Throwable $exception) {
             return $this->failureResponse($exception);
         }
     }
@@ -45,14 +63,12 @@ class LinkController extends Controller
      */
     public function prepareData(array $data)
     {
-        $exploded = explode('/', $data['url']);
-        $domain = $exploded[0];
-        unset($exploded[0]);
-        $url = implode('/', $exploded);
+        $original = explode('/', $data['url']);
+        
 
         return [
-            'domain' => $domain,
-            'url' => $url,
+            'original' => $original,
+            'short' => $short,
         ];
     }
 }

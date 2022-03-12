@@ -2,11 +2,19 @@
 
 namespace App\Controllers;
 
-use Symfony\Component\HttpFoundation\Response;
 use Throwable;
+use Core\Database\Connection;
+use Symfony\Component\HttpFoundation\Response;
 
 class Controller
 {
+    protected $dbConnection;
+
+    public function __construct()
+    {
+        $this->dbConnection = Connection::getInstance()->getConnection();
+    }
+
     /**
      * @param string $message
      * @param array $data

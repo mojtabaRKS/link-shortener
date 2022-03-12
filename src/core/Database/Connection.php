@@ -1,11 +1,11 @@
 <?php
 
-namespace Core;
+namespace Core\Database;
 
 use PDO;
 
 // Singleton to connect db.
-class Database
+class Connection
 {
     // Hold the class instance.
     private static $instance = null;
