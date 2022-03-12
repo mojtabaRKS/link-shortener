@@ -1,0 +1,27 @@
+{
+    "name": "mojtaba-rks/link-shortener",
+    "autoload": {
+        "psr-4": {
+            "Bootstrap\\": "src/bootstrap",
+            "App\\": "src/app",
+            "Core\\": "src/core"
+        },
+        "files": [
+            "src/helpers.php",
+            "src/routes.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "mojtaba rakhisi",
+            "email": "mojtaba.rakhisi@gamil.com"
+        }
+    ],
+    "require-dev": {
+        "symfony/var-dumper": "^5.4"
+    },
+    "require": {
+        "vlucas/phpdotenv": "^5.4",
+        "monolog/monolog": "^2.3"
+    }
+}
