@@ -18,4 +18,10 @@ $collection->add('links.store', newRoute(
     'App\Controllers\LinkController@store', 
 ));
 
+$collection->add('links.redirect', newRoute(
+    'GET', 
+    '/{code}', 
+    'App\Controllers\LinkController@redirect', 
+));
+
 return $collection;
