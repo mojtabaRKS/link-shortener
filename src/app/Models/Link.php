@@ -9,8 +9,8 @@ class Link extends Model
     protected $table = 'links';
 
     protected $attributes = [
-        'url',
-        'domain',
+        'original',
+        'short',
         self::CREATED_AT,
         self::UPDATED_AT,
     ];
