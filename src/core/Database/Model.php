@@ -2,9 +2,11 @@
 
 namespace Core\Database;
 
+use PDO;
+use Core\Concerns\Arrayable;
 use Core\Exceptions\ModelNotFoundException;
 
-abstract class Model
+abstract class Model implements Arrayable
 {
     protected $connection;
 
@@ -24,9 +26,6 @@ abstract class Model
         $this->attributes = array_flip($this->attributes);
     }
 
-    /**
-     * @param array $data
-     */
     public function save(array $data)
     {
         foreach ($data as $key => $value) {
@@ -60,13 +59,13 @@ abstract class Model
         $query = "SELECT * FROM {$this->table} WHERE id = ?";
         $stmt = $this->connection->getConnection()->prepare($query);
         $stmt->execute([$id]);
-        $result = $stmt->fetch();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if (!$result) {
             throw new ModelNotFoundException($id);
         }
 
-        return $result;
+        return $this->map($result);
     }
 
     public function where($attribute, $value, $operator = '=', $logic = 'AND')
@@ -83,7 +82,7 @@ abstract class Model
     
     public function exists()
     {
-        $query = "SELECT COUNT(*) FROM {$this->table} WHERE " .
+        $query = "SELECT COUNT(id) FROM {$this->table} WHERE " .
             implode(' ', array_map(function ($where) {
                 return "{$where['attribute']} {$where['operator']} ?";
             }, $this->wheres));
@@ -92,9 +91,54 @@ abstract class Model
         $stmt->execute(array_map(function ($where) {
             return $where['value'];
         }, $this->wheres));
-        $result = $stmt->fetch();
-        
-        return $result;
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return intval($result['COUNT(id)']) > 0;
     }
 
+    public function first()
+    {
+        $query = "SELECT * FROM {$this->table} WHERE " .
+            implode(' ', array_map(function ($where) {
+                return "{$where['attribute']} {$where['operator']} ?";
+            }, $this->wheres));
+        
+        $stmt = $this->connection->getConnection()->prepare($query);
+        $stmt->execute(array_map(function ($where) {
+            return $where['value'];
+        }, $this->wheres));
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $this->map($result);
+    }
+
+    public static function query()
+    {
+        return new static;
+    }
+
+    private function map(array $data)
+    {
+        foreach ($data as $key => $value) {
+            if (array_key_exists($key, $this->attributes)) {
+                $this->attributes[$key] = $value;
+            }
+        }
+
+        return $this;
+    }
+
+    public function __get($name)
+    {
+        if (array_key_exists($name, $this->attributes)) {
+            return $this->attributes[$name];
+        }
+
+        return null;
+    }
+
+    public function toArray(): array
+    {
+        return $this->attributes;
+    }
 }
