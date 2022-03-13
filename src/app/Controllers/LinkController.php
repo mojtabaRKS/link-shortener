@@ -3,8 +3,9 @@
 namespace App\Controllers;
 
 use Throwable;
-use Core\Database\Connection;
 use App\Models\Link;
+use Core\Database\Connection;
+use Core\Exceptions\ModelNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -58,13 +59,29 @@ class LinkController extends Controller
         }
     }
 
+    public function redirect(Request $request)
+    {
+        $code = trim($request->getPathInfo(), '/');
+        $link = Link::query()->where('short', $code)->first();
+
+        if (!$link) {
+            throw new ModelNotFoundException($code);
+        }
+
+        header('Location: ' . $link->original);
+        exit;
+    }
+
     /**
      * @param array $data
      */
-    public function prepareData(array $data)
+    private function prepareData(array $data)
     {
-        $original = explode('/', $data['url']);
-        
+        $original = $data['url'];
+
+        do {
+            $short = substr(md5(uniqid()), 0, 6);
+        } while (Link::query()->where('short', $short)->exists());
 
         return [
             'original' => $original,
