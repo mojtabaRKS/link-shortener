@@ -27,6 +27,7 @@ class Controller
     ) {
         return new Response(
             json_encode([
+                'code' => $code,
                 'status' => true,
                 'message' => $message,
                 'data' => $data,
