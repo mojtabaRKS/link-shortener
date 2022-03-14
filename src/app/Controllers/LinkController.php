@@ -36,6 +36,7 @@ class LinkController extends Controller
             );
 
         } catch (Throwable $exception) {
+            $this->dbConnection->rollBack();
             return $this->failureResponse($exception);
         }
     }
@@ -47,7 +48,7 @@ class LinkController extends Controller
     {
         try {
             $link = (new Link)->find($id);
-            dd($link);
+
             return $this->successResponse(
                 'Link found successfully', 
                 $link->toArray(), 
@@ -70,6 +71,58 @@ class LinkController extends Controller
 
         header('Location: ' . $link->original);
         exit;
+    }
+
+    public function update($id, Request $request)
+    {
+        $this->dbConnection->beginTransaction();
+
+        try {
+            $data = $this->prepareData(json_decode($request->getContent(), true));
+            (new Link)->update($id, $data);
+            $this->dbConnection->commit();
+
+            return $this->successResponse(
+                'Link updated successfully', 
+                [], 
+                Response::HTTP_OK
+            );
+
+        } catch (Throwable $exception) {
+            $this->dbConnection->rollBack();
+            return $this->failureResponse($exception);
+        }
+    }
+
+    public function delete($id)
+    {
+        $this->dbConnection->beginTransaction();
+
+        try {
+            (new Link)->delete($id);
+            $this->dbConnection->commit();
+
+            return $this->successResponse(
+                'Link deleted successfully', 
+                [], 
+                Response::HTTP_OK
+            );
+
+        } catch (Throwable $exception) {
+            $this->dbConnection->rollBack();
+            return $this->failureResponse($exception);
+        }
+    }
+
+    public function index()
+    {
+        $links = Link::query()->get();
+
+        return $this->successResponse(
+            'Links found successfully', 
+            $links->toArray(), 
+            Response::HTTP_OK
+        );
     }
 
     /**
