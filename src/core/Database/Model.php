@@ -40,19 +40,6 @@ abstract class Model implements Arrayable
         
         $this->saveToDb();
     }
-    
-    protected function saveToDb()
-    {
-        $query = "INSERT INTO {$this->table} (" .
-            implode(', ', array_keys($this->attributes)) .
-            ") VALUES (" .
-            implode(', ', array_fill(0, count($this->attributes), '?')) .
-            ")";
-        
-        $this->connection->getConnection()
-            ->prepare($query)
-            ->execute(array_values($this->attributes));
-    }
 
     public function find($id)
     {
@@ -112,20 +99,46 @@ abstract class Model implements Arrayable
         return $this->map($result);
     }
 
+    public function get()
+    {
+        $query = "SELECT * FROM {$this->table} WHERE " .
+            implode(' ', array_map(function ($where) {
+                return "{$where['attribute']} {$where['operator']} ?";
+            }, $this->wheres));
+        
+        $stmt = $this->connection->getConnection()->prepare($query);
+        $stmt->execute(array_map(function ($where) {
+            return $where['value'];
+        }, $this->wheres));
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(function ($result) {
+            return $this->map($result);
+        }, $results);
+    }
+
+    public function update($id, array $data)
+    {
+        $query = "UPDATE {$this->table} SET " .
+            implode(', ', array_map(function ($key) {
+                return "{$key} = ?";
+            }, array_keys($data))) .
+            " WHERE id = ?";
+        
+        $stmt = $this->connection->getConnection()->prepare($query);
+        $stmt->execute(array_merge(array_values($data), [$id]));
+    }
+
+    public function delete($id)
+    {
+        $query = "DELETE FROM {$this->table} WHERE id = ?";
+        $stmt = $this->connection->getConnection()->prepare($query);
+        $stmt->execute([$id]);
+    }
+
     public static function query()
     {
         return new static;
-    }
-
-    private function map(array $data)
-    {
-        foreach ($data as $key => $value) {
-            if (array_key_exists($key, $this->attributes)) {
-                $this->attributes[$key] = $value;
-            }
-        }
-
-        return $this;
     }
 
     public function __get($name)
@@ -140,5 +153,29 @@ abstract class Model implements Arrayable
     public function toArray(): array
     {
         return $this->attributes;
+    }
+
+    protected function saveToDb()
+    {
+        $query = "INSERT INTO {$this->table} (" .
+            implode(', ', array_keys($this->attributes)) .
+            ") VALUES (" .
+            implode(', ', array_fill(0, count($this->attributes), '?')) .
+            ")";
+        
+        $this->connection->getConnection()
+            ->prepare($query)
+            ->execute(array_values($this->attributes));
+    }
+
+    private function map(array $data)
+    {
+        foreach ($data as $key => $value) {
+            if (array_key_exists($key, $this->attributes)) {
+                $this->attributes[$key] = $value;
+            }
+        }
+
+        return $this;
     }
 }
