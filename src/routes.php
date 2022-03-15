@@ -1,6 +1,5 @@
 <?php
 
-use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
 $collection = new RouteCollection();
@@ -42,6 +41,18 @@ $collection->add('links.redirect', newRoute(
     'GET',
     '/{code}',
     'App\Controllers\LinkController@redirect',
+));
+
+$collection->add('auth.login', newRoute(
+    'POST',
+    '/',
+    'App\Controllers\AuthController@login',
+));
+
+$collection->add('auth.logout', newRoute(
+    'POST',
+    '/',
+    'App\Controllers\AuthController@logout',
 ));
 
 return $collection;

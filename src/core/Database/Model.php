@@ -10,6 +10,8 @@ abstract class Model implements Arrayable
 {
     protected $connection;
 
+    protected $primaryKey = 'id';
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -147,6 +149,10 @@ abstract class Model implements Arrayable
             return $this->attributes[$name];
         }
 
+        if ($name == $this->primaryKey) {
+            return $this->attributes[$this->primaryKey];
+        }
+
         return null;
     }
 
@@ -173,6 +179,10 @@ abstract class Model implements Arrayable
         foreach ($data as $key => $value) {
             if (array_key_exists($key, $this->attributes)) {
                 $this->attributes[$key] = $value;
+            }
+
+            if ($key == $this->primaryKey) {
+                $this->attributes[$this->primaryKey] = $value;
             }
         }
 
