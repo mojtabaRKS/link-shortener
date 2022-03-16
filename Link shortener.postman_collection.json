@@ -1,0 +1,574 @@
+{
+	"info": {
+		"_postman_id": "f2bf15e9-d00e-4ede-92de-09003feaa636",
+		"name": "Link shortener",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "all links",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/links",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"links"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "links",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/links",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"links"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Host",
+							"value": "localhost:8080"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 15 Mar 2022 21:47:09 GMT"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 15 Mar 2022 21:47:09 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/7.4.3"
+						},
+						{
+							"key": "Content-type",
+							"value": "text/json;charset=UTF-8"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"status\": true,\n    \"message\": \"Links found successfully\",\n    \"data\": [\n        {\n            \"id\": \"1\",\n            \"original\": \"https://jwt.io/libraries?language=PHP\",\n            \"short\": \"23e1b6\",\n            \"created_at\": \"2022-03-15 21:44:23\",\n            \"updated_at\": \"2022-03-15 21:44:23\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "create link",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"url\" : \"https://jwt.io/libraries?language=PHP\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/links",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"links"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "create link",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"url\" : \"https://jwt.io/libraries?language=PHP\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/links",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"links"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Host",
+							"value": "localhost:8080"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 15 Mar 2022 21:44:23 GMT"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 15 Mar 2022 21:44:23 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/7.4.3"
+						},
+						{
+							"key": "Content-type",
+							"value": "text/json;charset=UTF-8"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 201,\n    \"status\": true,\n    \"message\": \"Link created successfully\",\n    \"data\": []\n}"
+				}
+			]
+		},
+		{
+			"name": "delete link",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/links/1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"links",
+						"1"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "delete link",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/links/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"links",
+								"1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Host",
+							"value": "localhost:8080"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 15 Mar 2022 21:47:44 GMT"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 15 Mar 2022 21:47:44 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/7.4.3"
+						},
+						{
+							"key": "Content-type",
+							"value": "text/json;charset=UTF-8"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"status\": true,\n    \"message\": \"Link deleted successfully\",\n    \"data\": []\n}"
+				}
+			]
+		},
+		{
+			"name": "update link",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"url\" : \"http://www.google.com/about\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/links/2",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"links",
+						"2"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "update link",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"url\" : \"http://www.google.com/about\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/links/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"links",
+								"2"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Host",
+							"value": "localhost:8080"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 15 Mar 2022 21:49:33 GMT"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 15 Mar 2022 21:49:33 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/7.4.3"
+						},
+						{
+							"key": "Content-type",
+							"value": "text/json;charset=UTF-8"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"status\": true,\n    \"message\": \"Link updated successfully\",\n    \"data\": []\n}"
+				}
+			]
+		},
+		{
+			"name": "show link",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/links/2",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"links",
+						"2"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "show link",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/links/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"links",
+								"2"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Host",
+							"value": "localhost:8080"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 15 Mar 2022 21:49:59 GMT"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 15 Mar 2022 21:49:59 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/7.4.3"
+						},
+						{
+							"key": "Content-type",
+							"value": "text/json;charset=UTF-8"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"status\": true,\n    \"message\": \"Link found successfully\",\n    \"data\": {\n        \"original\": \"http://www.google.com/about\",\n        \"short\": \"3a28d2\",\n        \"created_at\": \"2022-03-15 21:47:58\",\n        \"updated_at\": \"2022-03-15 21:47:58\",\n        \"id\": \"2\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"token\", jsonData.data.token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\" : \"admin@admin.com\",\n    \"password\" : \"admin@12345\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/login",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "login",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\" : \"admin@admin.com\",\n    \"password\" : \"admin@12345\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Host",
+							"value": "localhost:8080"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 15 Mar 2022 23:02:42 GMT"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 15 Mar 2022 23:02:42 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/7.4.3"
+						},
+						{
+							"key": "Content-type",
+							"value": "text/json;charset=UTF-8"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"status\": true,\n    \"message\": \"token generated successfully\",\n    \"data\": {\n        \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NDczODUzNjIsImlzcyI6Imh0dHA6Ly9saW5rLXNob3J0ZW5lci5jb20iLCJuYmYiOjE2NDczODUzNjIsImV4cCI6MTY0NzM4NTcyMiwidXNlciI6eyJpZCI6IjEifX0._ilmAvYlAGY4CrGiWuCDt4mjb1O9xk26adt7OgK1BqA\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "logout",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/logout",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"logout"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "logout",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/logout",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"logout"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Host",
+							"value": "localhost:8080"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 15 Mar 2022 23:02:50 GMT"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 15 Mar 2022 23:02:50 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/7.4.3"
+						},
+						{
+							"key": "Content-type",
+							"value": "text/json;charset=UTF-8"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"status\": true,\n    \"message\": \"logged out successfully\",\n    \"data\": []\n}"
+				}
+			]
+		}
+	]
+}
