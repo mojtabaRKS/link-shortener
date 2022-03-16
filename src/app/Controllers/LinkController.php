@@ -5,7 +5,7 @@ namespace App\Controllers;
 use Throwable;
 use App\Models\Link;
 use App\Traits\CheckAuth;
-use Core\Cache\Redis;
+use Core\Cache\RedisFacade as Redis;
 use Core\Exceptions\ModelNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,13 +30,12 @@ class LinkController extends Controller
             $this->dbConnection->commit();
 
             return $this->successResponse(
-                'Link created successfully', 
+                'Action completed successfully', 
                 [], 
                 Response::HTTP_CREATED
             );
 
         } catch (Throwable $exception) {
-            dd($exception);
             $this->dbConnection->rollBack();
             return $this->failureResponse($exception);
         }
@@ -52,7 +51,7 @@ class LinkController extends Controller
             $link = (new Link)->find($id);
 
             return $this->successResponse(
-                'Link found successfully', 
+                'Action completed successfully', 
                 $link->toArray(), 
                 Response::HTTP_OK
             );
@@ -94,7 +93,7 @@ class LinkController extends Controller
             $this->dbConnection->commit();
 
             return $this->successResponse(
-                'Link updated successfully', 
+                'Action completed successfully', 
                 [], 
                 Response::HTTP_OK
             );
@@ -117,7 +116,7 @@ class LinkController extends Controller
             $this->dbConnection->commit();
 
             return $this->successResponse(
-                'Link deleted successfully', 
+                'Action completed successfully', 
                 [], 
                 Response::HTTP_OK
             );
@@ -134,7 +133,7 @@ class LinkController extends Controller
         $links = Link::query()->get();
         
         return $this->successResponse(
-            'Links found successfully', 
+            'Action completed successfully', 
             $links, 
             Response::HTTP_OK
         );
