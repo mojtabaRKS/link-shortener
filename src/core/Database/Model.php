@@ -40,7 +40,9 @@ abstract class Model implements Arrayable
             $this->attributes[$timestamp] = date('Y-m-d H:i:s');
         }
         
-        $this->saveToDb();
+        $id = $this->saveToDb();
+
+        return $this->find($id);
     }
 
     public function find($id)
@@ -87,36 +89,50 @@ abstract class Model implements Arrayable
 
     public function first()
     {
-        $query = "SELECT * FROM {$this->table} WHERE " .
-            implode(' ', array_map(function ($where) {
-                return "{$where['attribute']} {$where['operator']} ?";
-            }, $this->wheres));
-        
+        $query = "SELECT * FROM {$this->table}";
+
+        foreach ($this->wheres as $index => $where) {
+            if ($index !== 0) {
+                $query .= " {$where['logic']} ";
+            }else {
+                $query .= " WHERE ";
+            }
+
+            $query .= "{$where['attribute']} {$where['operator']} ?";
+        }
+
         $stmt = $this->connection->getConnection()->prepare($query);
+
         $stmt->execute(array_map(function ($where) {
             return $where['value'];
         }, $this->wheres));
+        
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$result) {
+            return null;
+        }
 
         return $this->map($result);
     }
 
     public function get()
     {
-        $query = "SELECT * FROM {$this->table} WHERE " .
-            implode(' ', array_map(function ($where) {
-                return "{$where['attribute']} {$where['operator']} ?";
-            }, $this->wheres));
+        $query = "SELECT * FROM {$this->table}";
         
+        if (count($this->wheres)) {
+            $query .= "WHERE " .
+                implode(' ', array_map(function ($where) {
+                    return "{$where['attribute']} {$where['operator']} ?";
+                }, $this->wheres));
+        }
+
         $stmt = $this->connection->getConnection()->prepare($query);
         $stmt->execute(array_map(function ($where) {
             return $where['value'];
         }, $this->wheres));
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        return array_map(function ($result) {
-            return $this->map($result);
-        }, $results);
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function update($id, array $data)
@@ -128,7 +144,7 @@ abstract class Model implements Arrayable
             " WHERE id = ?";
         
         $stmt = $this->connection->getConnection()->prepare($query);
-        $stmt->execute(array_merge(array_values($data), [$id]));
+        return $stmt->execute(array_merge(array_values($data), [$id]));
     }
 
     public function delete($id)
@@ -172,6 +188,8 @@ abstract class Model implements Arrayable
         $this->connection->getConnection()
             ->prepare($query)
             ->execute(array_values($this->attributes));
+
+        return $this->connection->getConnection()->lastInsertId();
     }
 
     private function map(array $data)
