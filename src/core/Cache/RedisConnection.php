@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\Redis;
+namespace Core\Cache;
 
 use Predis\Client;
 
@@ -14,7 +14,7 @@ class RedisConnection
     private function __construct()
     {
         $this->conn = new Client(array(
-            "scheme" => $_ENV['REDIS_SCHEME'],
+            "scheme" => 'tcp',
             "host" => $_ENV['REDIS_HOST'],
             "port" => $_ENV['REDIS_PORT'],
             "password" => $_ENV['REDIS_PASSWORD']

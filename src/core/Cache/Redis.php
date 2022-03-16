@@ -3,7 +3,6 @@
 namespace Core\Cache;
 
 use Closure;
-use Core\Redis\RedisConnection;
 
 class Redis
 {
@@ -16,7 +15,6 @@ class Redis
 
     public static function __callStatic($name, $arguments)
     {
-        dd($name, $arguments);
         return (new self)->$name(...$arguments);
     }
 
