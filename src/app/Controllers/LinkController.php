@@ -4,29 +4,29 @@ namespace App\Controllers;
 
 use Throwable;
 use App\Models\Link;
-use Core\Database\Connection;
+use App\Traits\CheckAuth;
+use Core\Cache\Redis;
 use Core\Exceptions\ModelNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class LinkController extends Controller
 {
-    protected $dbConnection;
-    public function __construct()
-    {
-        $this->dbConnection = Connection::getInstance()->getConnection();
-    }
-
+    use CheckAuth;
+    
     /**
      * @param Request $request
      */
     public function store(Request $request)
     {
+        $this->checkAuth($request);
         $this->dbConnection->beginTransaction();
 
         try {
             $data = $this->prepareData(json_decode($request->getContent(), true));
-            (new Link)->save($data);
+            $link = (new Link)->save($data);
+            
+            Redis::set($link->short, $link->url, $_ENV['CACHE_TTL']);
             $this->dbConnection->commit();
 
             return $this->successResponse(
@@ -36,6 +36,7 @@ class LinkController extends Controller
             );
 
         } catch (Throwable $exception) {
+            dd($exception);
             $this->dbConnection->rollBack();
             return $this->failureResponse($exception);
         }
@@ -44,8 +45,9 @@ class LinkController extends Controller
     /**
      * @param Request $request
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
+        $this->checkAuth($request);
         try {
             $link = (new Link)->find($id);
 
@@ -63,6 +65,12 @@ class LinkController extends Controller
     public function redirect(Request $request)
     {
         $code = trim($request->getPathInfo(), '/');
+
+        if (Redis::exists($code)) {
+            header('Location: ' . Redis::get($code));
+            exit;
+        }
+
         $link = Link::query()->where('short', $code)->first();
 
         if (!$link) {
@@ -75,11 +83,14 @@ class LinkController extends Controller
 
     public function update($id, Request $request)
     {
+        $this->checkAuth($request);
         $this->dbConnection->beginTransaction();
 
         try {
             $data = $this->prepareData(json_decode($request->getContent(), true));
             (new Link)->update($id, $data);
+            $link = Link::query()->find($id);
+            Redis::set($link->short, $link->url, $_ENV['CACHE_TTL']);
             $this->dbConnection->commit();
 
             return $this->successResponse(
@@ -94,11 +105,14 @@ class LinkController extends Controller
         }
     }
 
-    public function delete($id)
+    public function delete($id, Request $request)
     {
+        $this->checkAuth($request);
         $this->dbConnection->beginTransaction();
 
         try {
+            $link = Link::query()->find($id);
+            Redis::delete($link->short);
             (new Link)->delete($id);
             $this->dbConnection->commit();
 
@@ -114,13 +128,14 @@ class LinkController extends Controller
         }
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        $this->checkAuth($request);
         $links = Link::query()->get();
-
+        
         return $this->successResponse(
             'Links found successfully', 
-            $links->toArray(), 
+            $links, 
             Response::HTTP_OK
         );
     }
