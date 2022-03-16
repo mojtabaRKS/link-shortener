@@ -15,7 +15,7 @@ class Logger extends MonologLogger
         parent::__construct($key);
 
         if (empty($app_config)) {
-            $LOG_PATH = __DIR__ . "/../../logs/";
+            $LOG_PATH = __DIR__ . "/../../../logs";
             $app_config = [
                 'logFile' => "{$LOG_PATH}/{$key}.log",
                 'logLevel' => \Monolog\Logger::DEBUG
@@ -37,7 +37,7 @@ class Logger extends MonologLogger
     public static function enableSystemLogs()
     {
 
-        $LOG_PATH = __DIR__ . "/../../logs/";
+        $LOG_PATH = __DIR__ . "/../../../logs";
         // Error Log
         self::$log_sys['error'] = new Logger('errors');
         self:: $log_sys['error']->pushHandler(new StreamHandler("{$LOG_PATH}/errors.log"));
@@ -49,6 +49,7 @@ class Logger extends MonologLogger
             $_REQUEST,
             trim(file_get_contents("php://input"))
         ];
+
         self::$log_sys['request'] = new Logger('request');
         self::$log_sys['request']->pushHandler(new StreamHandler("{$LOG_PATH}/request.log"));
         self::$log_sys['request']->info("REQUEST", $data);
