@@ -5,7 +5,7 @@ use Symfony\Component\Routing\RouteCollection;
 $collection = new RouteCollection();
 
 $collection->add('links.index', newRoute(
-    'DELETE',
+    'GET',
     '/links',
     'App\Controllers\LinkController@index',
 ));
@@ -45,13 +45,13 @@ $collection->add('links.redirect', newRoute(
 
 $collection->add('auth.login', newRoute(
     'POST',
-    '/',
+    '/login',
     'App\Controllers\AuthController@login',
 ));
 
 $collection->add('auth.logout', newRoute(
     'POST',
-    '/',
+    '/logout',
     'App\Controllers\AuthController@logout',
 ));
 
