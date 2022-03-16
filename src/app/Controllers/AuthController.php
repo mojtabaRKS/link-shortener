@@ -2,9 +2,11 @@
 
 namespace App\Controllers;
 
+use Exception;
 use App\Models\User;
 use Firebase\JWT\JWT;
 use DateTimeImmutable;
+use App\Traits\CheckAuth;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -13,23 +15,67 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class AuthController extends Controller
 {
+    use CheckAuth;
+
     public function login(Request $request)
     {
-        $credentials = $this->prepareData(json_decode($request->getContent(), true));
-        $user = User::query()->where('email', $credentials['email'])
-            ->where('password', $credentials['password'])->first();
+        try {
+            $credentials = $this->prepareData(json_decode($request->getContent(), true));
 
+        $user = User::query()
+            ->where('email', $credentials['email'])
+            ->where('password', $credentials['password'])
+            ->first();
+        
         if (!$user instanceof User) {
-            return $this->failureResponse('email or password is invalid', [], Response::HTTP_UNAUTHORIZED);
+            throw new Exception('Invalid credentials', 401);
         }
 
         $token = $this->generateToken($user);
 
+        $user->update($user->id,['token' => $token]);
+        
         return $this->successResponse(
             'token generated successfully',
             ['token' => $token],
             Response::HTTP_OK
         );
+        } catch (\Throwable $th) {
+            return $this->failureResponse(
+                $th,
+                $th->getCode()
+            );
+        }
+    }
+
+    public function logout(Request $request)
+    {
+        $this->checkAuth($request);
+        $user = $this->getUser($request);
+
+        $user->update($user->id,['token' => null]);
+
+        return $this->successResponse(
+            'logged out successfully',
+            [],
+            Response::HTTP_OK
+        );
+    }
+
+    private function getUser(Request $request)
+    {
+        $token = $request->headers->get('Authorization');
+        $token = explode(' ', $token)[1];
+
+        $user = User::query()
+            ->where('token', $token)
+            ->first();
+
+        if (!$user instanceof User) {
+            throw new Exception('Invalid credentials', 401);
+        }
+        
+        return $user;
     }
 
     private function prepareData($data)
