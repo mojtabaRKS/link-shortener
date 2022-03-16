@@ -23,6 +23,6 @@ php pure lighweight, fast and simple link shortener.
 7. `$ php setup.php`
 8. go to redis container with `docker exec -it link_shortenere_redis bash`
 9. `$ redis-cli`
-10. `$ CONFIG SET requirepass "password"
+10. `$ CONFIG SET requirepass "password"`
 11. import from `docs/Link shortener.postman_collection.json` into postman
 12. try urls :)
